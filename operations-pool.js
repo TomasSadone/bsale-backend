@@ -1,14 +1,3 @@
-const getData = (pool, callback, query) => {
-  pool.getConnection(function (err, connection) {
-    if (err) throw new Error(err);
-    connection.query(query, function (err, result) {
-      connection.release();
-      if (err) throw new Error(err);
-      callback(result);
-    });
-  });
-};
-
 const query = (req, pool, callback) => {
   pool.query(req, (err, data) => {
     if (err) {
