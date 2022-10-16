@@ -1,0 +1,47 @@
+const getData = (pool, callback, query) => {
+  pool.getConnection(function (err, connection) {
+    if (err) throw new Error(err);
+    connection.query(query, function (err, result) {
+      connection.release();
+      if (err) throw new Error(err);
+      callback(result);
+    });
+  });
+};
+
+const query = (req, pool, callback) => {
+  pool.query(req, (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    callback(data);
+  });
+};
+
+const getCategories = (pool, callback) => {
+  let req = "SELECT * FROM category";
+  query(req, pool, callback);
+};
+
+const getProducts = (pool, callback) => {
+  let req = "SELECT * FROM product";
+  query(req, pool, callback);
+};
+
+const getProductsInCategory = (categoryId, pool, callback) => {
+  let req = `SELECT * FROM product WHERE category in (${categoryId})`;
+  query(req, pool, callback);
+};
+
+const getProductsBySearch = (search, pool, callback) => {
+  let req = `SELECT * FROM product WHERE name LIKE '%${search}%';`;
+  query(req, pool, callback);
+};
+
+module.exports = {
+  getCategories,
+  getProducts,
+  getProductsBySearch,
+  getProductsInCategory,
+};
