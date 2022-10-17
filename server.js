@@ -34,7 +34,7 @@ connection.connect(err => {
 });
 
 app.get("/", (req, res) => {
-  return "Hello World";
+  return res.json("hello world");
 });
 app.get("/categories", (req, res) => {
   try {
