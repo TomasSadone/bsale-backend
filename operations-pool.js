@@ -1,7 +1,10 @@
+const { handleDisconnect } = require("./server");
+
 const query = (req, pool, callback) => {
   pool.query(req, (err, data) => {
     if (err) {
       console.error(err);
+      handleDisconnect();
       return;
     }
     callback(data);

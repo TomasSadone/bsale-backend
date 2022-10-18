@@ -22,16 +22,35 @@ const config = {
   database: process.env.DATABASE,
 };
 
-const connection = mysql.createConnection(config);
+let connection;
 const pool = mysql.createPool(config);
 
-connection.connect(err => {
-  if (err) {
-    console.log(err, "error");
-    throw err;
-  }
-  console.log("conected to database");
-});
+const handleDisconnect = () => {
+  connection = mysql.createConnection(config);
+  connection.connect(err => {
+    if (err) {
+      console.log(err, "error");
+      setTimeout(handleDisconnect, 2000);
+      throw err;
+    } else {
+      console.log("conected to database");
+    }
+  });
+  connection.on("error", function (err) {
+    console.log("db error", err);
+    handleDisconnect();
+  });
+};
+handleDisconnect();
+
+// connection.connect(err => {
+//   if (err) {
+//     console.log(err, "error");
+//     // handleDisconnect();
+//     throw err;
+//   }
+//   console.log("conected to database");
+// });
 
 app.get("/", (req, res) => {
   return res.json("hello world");
@@ -81,3 +100,5 @@ app.all("*", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+module.exports = { handleDisconnect };
