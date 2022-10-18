@@ -14,7 +14,6 @@ require("dotenv").config();
 const cors = require("cors");
 app.use(cors());
 
-// let connection;
 const config = {
   user: process.env.USER,
   password: process.env.PASSWORD,
@@ -36,21 +35,8 @@ const handleDisconnect = () => {
       console.log("conected to database");
     }
   });
-  connection.on("error", function (err) {
-    console.log("db error", err);
-    handleDisconnect();
-  });
 };
 handleDisconnect();
-
-// connection.connect(err => {
-//   if (err) {
-//     console.log(err, "error");
-//     // handleDisconnect();
-//     throw err;
-//   }
-//   console.log("conected to database");
-// });
 
 app.get("/", (req, res) => {
   return res.json("hello world");
