@@ -9,34 +9,14 @@ const {
   getProductsInCategory,
 } = require("./operations-pool");
 
-require("dotenv").config();
-
 const cors = require("cors");
+const handleConnect = require("./helpers/handleConnect");
+const config = require("./config/dbConfig");
 app.use(cors());
 
-const config = {
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  host: process.env.HOST,
-  database: process.env.DATABASE,
-};
-
-let connection;
 const pool = mysql.createPool(config);
 
-const handleDisconnect = () => {
-  connection = mysql.createConnection(config);
-  connection.connect(err => {
-    if (err) {
-      console.log(err, "error");
-      setTimeout(handleDisconnect, 2000);
-      throw err;
-    } else {
-      console.log("conected to database");
-    }
-  });
-};
-handleDisconnect();
+handleConnect();
 
 app.get("/", (req, res) => {
   return res.json("hello world");
@@ -86,5 +66,3 @@ app.all("*", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
-
-module.exports = { handleDisconnect };

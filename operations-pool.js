@@ -1,10 +1,10 @@
-const { handleDisconnect } = require("./server");
+const handleConnect = require("./helpers/handleConnect");
 
 const query = (req, pool, callback) => {
   pool.query(req, (err, data) => {
     if (err) {
       console.error(err);
-      handleDisconnect();
+      handleConnect();
       return;
     }
     callback(data);
