@@ -1,14 +1,16 @@
 const express = require('express');
-const { petitionHandler } = require('../helpers/petitionHandler');
-const { getProducts } = require('../operations-pool');
+const { getProducts } = require('../controllers/productsController');
+const { handlePetition } = require('../helpers/handlePetition');
 
 // Create wrapper function that will allow router to use connection pool
 const productsRouteWrapper = pool => {
   const router = express.Router();
-  //handle every route inside this path with its pertinent controller
   router.route('/').get((req, res) => {
-    petitionHandler(req, res, pool, getProducts);
+    //handlePetition takes req,res, pool, and the controller for each route.
+    //it passes the means to the controller to send the response
+    handlePetition(req, res, pool, get1Products);
   });
+  //must return router
   return router;
 };
 

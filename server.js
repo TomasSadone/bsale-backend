@@ -6,6 +6,7 @@ const cors = require('cors');
 const handleConnect = require('./helpers/handleConnect');
 const config = require('./config/dbConfig');
 
+//routes handler functions:
 const { categoriesRouteWrapper } = require('./routes/categories');
 const { productsRouteWrapper } = require('./routes/products');
 const { searchRouteWrapper } = require('./routes/search');
@@ -16,14 +17,14 @@ app.use(cors());
 
 //initialize and mantain connection to DB:
 handleConnect();
-//initialize pool connection to DB:
+
+//initialize pool connection needed to handle connections efficiently:
 const pool = mysql.createPool(config);
 
 //Handle routes:
 app.get('/', (req, res) => {
   return res.json('hello world');
 });
-
 // functions passed as second argument on .use recieve a conection pool and return a router
 app.use('/categories', categoriesRouteWrapper(pool));
 

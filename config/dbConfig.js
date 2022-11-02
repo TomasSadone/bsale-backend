@@ -1,5 +1,6 @@
-require("dotenv").config();
+require('dotenv').config();
 
+//parameters to access database
 const config = {
   user: process.env.USER,
   password: process.env.PASSWORD,
