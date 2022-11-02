@@ -1,67 +1,39 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3500;
-const mysql = require("mysql2");
-const {
-  getCategories,
-  getProducts,
-  getProductsBySearch,
-  getProductsInCategory,
-} = require("./operations-pool");
+const mysql = require('mysql2');
+const cors = require('cors');
+const handleConnect = require('./helpers/handleConnect');
+const config = require('./config/dbConfig');
 
-const cors = require("cors");
-const handleConnect = require("./helpers/handleConnect");
-const config = require("./config/dbConfig");
+const { categoriesRouteWrapper } = require('./routes/categories');
+const { productsRouteWrapper } = require('./routes/products');
+const { searchRouteWrapper } = require('./routes/search');
+const { categoryRouteWrapper } = require('./routes/category');
+
+//make it a public API:
 app.use(cors());
 
+//initialize and mantain connection to DB:
+handleConnect();
+//initialize pool connection to DB:
 const pool = mysql.createPool(config);
 
-handleConnect();
-
-app.get("/", (req, res) => {
-  return res.json("hello world");
-});
-app.get("/categories", (req, res) => {
-  try {
-    getCategories(pool, result => {
-      res.json(result);
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
+//Handle routes:
+app.get('/', (req, res) => {
+  return res.json('hello world');
 });
 
-app.get("/products", (req, res) => {
-  try {
-    getProducts(pool, result => {
-      res.json(result);
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
+// functions passed as second argument on .use recieve a conection pool and return a router
+app.use('/categories', categoriesRouteWrapper(pool));
 
-app.get("/category/:categoryId", (req, res) => {
-  try {
-    getProductsInCategory(req?.params?.categoryId, pool, result => {
-      res.json(result);
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
+app.use('/products', productsRouteWrapper(pool));
 
-app.get("/search/:id", (req, res) => {
-  try {
-    getProductsBySearch(req?.params?.id, pool, result => {
-      res.json(result);
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
+app.use('/category', categoryRouteWrapper(pool));
 
-app.all("*", (req, res) => {
+app.use('/search', searchRouteWrapper(pool));
+
+app.all('*', (req, res) => {
   res.sendStatus(404);
 });
 

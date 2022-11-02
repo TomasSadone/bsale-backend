@@ -7,7 +7,7 @@ const query = (req, pool, callback) => {
       handleConnect();
       return;
     }
-    console.log(fields);
+    // console.log(fields);
     callback(data);
   });
 };
@@ -22,8 +22,10 @@ const getProducts = (pool, callback) => {
   query(req, pool, callback);
 };
 
+//no le estoy pasando las req con los ids a estas 2 en el petition handler
 const getProductsInCategory = (categoryId, pool, callback) => {
   let req = 'SELECT * FROM product WHERE category = ' + pool.escape(categoryId);
+  console.log(pool);
   query(req, pool, callback);
 };
 
