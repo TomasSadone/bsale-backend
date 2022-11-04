@@ -8,7 +8,7 @@ const productsRouteWrapper = pool => {
   router.route('/').get((req, res) => {
     //handlePetition takes req,res, pool, and the controller for each route.
     //it passes the means to the controller to send the response
-    handlePetition(req, res, pool, get1Products);
+    handlePetition(req, res, pool, getProducts);
   });
   //must return router
   return router;
